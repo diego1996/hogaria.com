@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, usePathname } from 'next/navigation'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 export const useNavigation = () => {
   const router = useRouter()
@@ -30,6 +30,22 @@ export const useNavigation = () => {
       }
     }
   }, [router, pathname])
+
+  // Efecto para manejar anchors cuando se navega directamente a una URL con anchor
+  useEffect(() => {
+    const hash = window.location.hash
+    if (hash) {
+      setTimeout(() => {
+        const element = document.querySelector(hash)
+        if (element) {
+          element.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          })
+        }
+      }, 500) // Delay más largo para páginas que necesitan cargar
+    }
+  }, [pathname])
 
   return { navigateTo }
 } 
