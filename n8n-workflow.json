@@ -1,0 +1,164 @@
+{
+  "name": "Hogaría Contact Form Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "hogaria-contact",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.type }}",
+              "operation": "equals",
+              "value2": "contact_form"
+            }
+          ]
+        }
+      },
+      "id": "if-contact-form",
+      "name": "If Contact Form",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "message": "Nuevo mensaje de contacto de Hogaría:\n\n👤 Nombre: {{ $json.data.name }}\n📧 Email: {{ $json.data.email }}\n📱 Teléfono: {{ $json.data.phone }}\n💬 Mensaje: {{ $json.data.message }}\n\n⏰ Fecha: {{ $json.timestamp }}",
+        "additionalFields": {
+          "to": "{{ $env.WHATSAPP_ADMIN_NUMBER }}"
+        }
+      },
+      "id": "whatsapp-notification",
+      "name": "WhatsApp Notification",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "fromEmail": "{{ $env.SMTP_FROM }}",
+        "toEmail": "={{ $json.data.email }}",
+        "subject": "Gracias por contactar con Hogaría",
+        "message": "Hola {{ $json.data.name }},\n\nGracias por contactar con Hogaría. Hemos recibido tu mensaje y nos pondremos en contacto contigo pronto.\n\nTu mensaje:\n{{ $json.data.message }}\n\nSaludos,\nEl equipo de Hogaría\n\n---\nDetalles que abrazan tu hogar 🏠"
+      },
+      "id": "email-confirmation",
+      "name": "Email Confirmation",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "contact",
+        "additionalFields": {
+          "name": "={{ $json.data.name }}",
+          "email": "={{ $json.data.email }}",
+          "phone": "={{ $json.data.phone }}",
+          "message": "={{ $json.data.message }}",
+          "source": "website",
+          "created_at": "={{ $json.timestamp }}"
+        }
+      },
+      "id": "save-to-crm",
+      "name": "Save to CRM",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Mensaje recibido correctamente. Nos pondremos en contacto pronto.\"\n}"
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "If Contact Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Contact Form": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Notification",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Notification": {
+      "main": [
+        [
+          {
+            "node": "Save to CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Confirmation": {
+      "main": [
+        [
+          {
+            "node": "Save to CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to CRM": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "hogaria-contact-workflow",
+  "tags": ["hogaria", "contact", "whatsapp"]
+} 

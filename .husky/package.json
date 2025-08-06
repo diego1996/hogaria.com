@@ -1,0 +1,17 @@
+{
+  "name": "husky",
+  "version": "9.0.11",
+  "description": "Git hooks made easy",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "git",
+    "hooks",
+    "pre-commit",
+    "post-commit"
+  ],
+  "author": "Typicode",
+  "license": "MIT"
+} 

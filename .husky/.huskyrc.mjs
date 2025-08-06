@@ -1,0 +1,6 @@
+export default {
+  hooks: {
+    'pre-commit': 'npm run lint && npm run type-check',
+    'commit-msg': 'npx --no -- commitlint --edit $1'
+  }
+} 
