@@ -45,20 +45,36 @@ const About = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-5xl font-handwriting text-hogaria-wine mb-6">
-              Nuestra Historia
-            </h2>
+            <div className="relative mb-6">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute -top-4 -left-6 text-3xl text-red-400 opacity-60"
+              >
+                💕
+              </motion.div>
+              <h2 className="text-4xl md:text-5xl font-handwriting text-hogaria-wine relative z-10">
+                Nuestra Historia
+              </h2>
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                className="absolute -top-2 -right-6 text-2xl text-pink-400 opacity-60"
+              >
+                ✨
+              </motion.div>
+            </div>
             
             <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-              Hogaría nació de la pasión por crear espacios cálidos y acogedores. 
-              Todo comenzó en un pequeño taller donde cada puntada, cada detalle, 
-              se hacía pensando en las familias que disfrutarían de nuestros productos.
+              Hogaría nació en Colombia de la pasión por crear espacios cálidos y acogedores. 
+              Todo comenzó en un pequeño taller en Bogotá donde cada puntada, cada detalle, 
+              se hacía pensando en las familias colombianas que disfrutarían de nuestros productos.
             </p>
             
             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              Hoy, seguimos manteniendo esa esencia artesanal, pero hemos crecido 
-              para llegar a más hogares, llevando la magia de lo hecho a mano a 
-              cada rincón de tu casa.
+              Hoy, seguimos manteniendo esa esencia artesanal colombiana, pero hemos crecido 
+              para llegar a más hogares, no solo en Colombia sino también en España, llevando 
+              la magia de lo hecho a mano a cada rincón de tu casa.
             </p>
 
             {/* Values */}

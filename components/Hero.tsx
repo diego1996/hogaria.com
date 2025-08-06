@@ -2,16 +2,19 @@
 
 import { motion } from 'framer-motion'
 import { MessageCircle, ArrowRight, Star } from 'lucide-react'
+import { useCountry } from '@/app/contexts/CountryContext'
 
 const Hero = () => {
+  const { selectedCountry } = useCountry()
+  
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent('¡Hola! Me interesan los productos de Hogaría. ¿Podrías ayudarme?')
-    const phone = '+34600000000' // Cambiar por el número real
+    const phone = selectedCountry.id === 'co' ? '573000000000' : '34600000000'
     window.open(`https://wa.me/${phone}?text=${message}`, '_blank')
   }
 
   return (
-    <section id="inicio" className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-hogaria-warm via-hogaria-crema to-hogaria-beige overflow-hidden">
+    <section id="inicio" className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-hogaria-warm via-hogaria-crema to-hogaria-beige overflow-hidden pt-20 pb-16">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-pattern opacity-10"></div>
       
@@ -27,24 +30,48 @@ const Hero = () => {
         className="absolute bottom-20 right-10 w-20 h-20 bg-hogaria-wine/20 rounded-full blur-xl"
       />
 
-      <div className="container-custom relative z-10">
-        <div className="text-center max-w-4xl mx-auto px-4">
+      <div className="container-custom relative z-10 py-8">
+        <div className="text-center max-w-4xl mx-auto px-4 space-y-8">
           {/* Main Title */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-5xl md:text-7xl font-handwriting text-hogaria-wine mb-6"
-          >
-            Hogaría
-          </motion.h1>
+          <motion.div className="relative">
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-5xl md:text-7xl font-handwriting text-hogaria-wine relative z-10"
+            >
+              Hogaría
+            </motion.h1>
+            {/* Floating hearts around title */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute -top-4 -left-4 text-2xl text-red-400 opacity-60"
+            >
+              💕
+            </motion.div>
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+              className="absolute -top-2 -right-4 text-xl text-pink-400 opacity-60"
+            >
+              ✨
+            </motion.div>
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -bottom-2 left-1/4 text-lg text-yellow-400 opacity-60"
+            >
+              🌸
+            </motion.div>
+          </motion.div>
 
           {/* Subtitle */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl text-gray-700 mb-8 font-medium"
+            className="text-xl md:text-2xl text-gray-700 font-medium"
           >
             Detalles que abrazan tu hogar
           </motion.p>
@@ -54,11 +81,11 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed"
+            className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed"
           >
-            Descubre nuestra colección de productos artesanales para el hogar. 
-            Cada pieza está hecha con amor y dedicación, transformando tu espacio 
-            en un lugar cálido y acogedor.
+            Descubre nuestra colección de productos artesanales colombianos para el hogar. 
+            Cada pieza está hecha con amor y dedicación en nuestro taller de Bogotá, 
+            transformando tu espacio en un lugar cálido y acogedor.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -66,7 +93,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -135,7 +162,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.4 }}
-            className="mt-16 flex items-center justify-center space-x-4 text-gray-600"
+            className="flex items-center justify-center space-x-4 text-gray-600"
           >
             <div className="flex items-center space-x-1">
               {[...Array(5)].map((_, i) => (

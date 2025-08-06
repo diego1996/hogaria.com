@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { ArrowRight, Star, MessageCircle } from 'lucide-react'
+import { useCountry } from '@/app/contexts/CountryContext'
 
 interface Collection {
   id: number
@@ -14,6 +15,7 @@ interface Collection {
 }
 
 const Collections = () => {
+  const { selectedCountry } = useCountry()
   const collections: Collection[] = [
     {
       id: 1,

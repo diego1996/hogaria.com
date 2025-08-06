@@ -44,4 +44,117 @@
     background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.1) 1px, transparent 0);
     background-size: 20px 20px;
   }
+}
+
+/* Estilos de Accesibilidad */
+@layer base {
+  /* Alto contraste */
+  .high-contrast {
+    filter: contrast(150%) brightness(110%);
+  }
+  
+  .high-contrast * {
+    border-color: #000 !important;
+  }
+  
+  .high-contrast .bg-white {
+    background-color: #ffffff !important;
+  }
+  
+  .high-contrast .text-gray-800 {
+    color: #000000 !important;
+  }
+  
+  .high-contrast .text-gray-600 {
+    color: #333333 !important;
+  }
+  
+  .high-contrast .bg-hogaria-wine {
+    background-color: #000000 !important;
+  }
+  
+  .high-contrast .text-hogaria-wine {
+    color: #ffffff !important;
+  }
+  
+  /* Reducir movimiento */
+  .reduce-motion *,
+  .reduce-motion *::before,
+  .reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .reduce-motion .animate-pulse {
+    animation: none !important;
+  }
+  
+  .reduce-motion .animate-spin {
+    animation: none !important;
+  }
+  
+  .reduce-motion .animate-bounce {
+    animation: none !important;
+  }
+  
+  /* Mejoras de foco para accesibilidad */
+  *:focus {
+    outline: 2px solid #9B6B7A !important;
+    outline-offset: 2px !important;
+  }
+  
+  /* Mejoras de contraste para texto */
+  .text-gray-600 {
+    color: #4B5563 !important;
+  }
+  
+  .text-gray-700 {
+    color: #374151 !important;
+  }
+  
+  /* Indicadores de estado para lectores de pantalla */
+  .sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+  
+  /* Mejoras para navegación por teclado */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid #9B6B7A !important;
+    outline-offset: 2px !important;
+  }
+  
+  /* Estilos para elementos interactivos */
+  button:hover,
+  a:hover {
+    transform: translateY(-1px);
+  }
+  
+  /* Mejoras de legibilidad */
+  p, li, div {
+    line-height: 1.6;
+  }
+  
+  /* Contraste mejorado para enlaces */
+  a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
 } 

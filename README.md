@@ -6,14 +6,16 @@ Un website moderno y hermoso para promocionar y vender productos artesanales par
 
 ## ✨ Características
 
-- 🎨 **Diseño Moderno**: Interfaz elegante y acogedora con los colores de Hogaría
+- 🎨 **Diseño Moderno y Amoroso**: Interfaz elegante y acogedora con toques cálidos y emotivos
 - 📱 **Responsive**: Optimizado para todos los dispositivos
+- 🤖 **Chat de IA Amoroso**: Asistente virtual integrado con n8n y OpenAI
 - 💬 **Integración WhatsApp**: Ventas directas por WhatsApp Business
 - 🎯 **SEO Optimizado**: Meta tags y estructura para mejor posicionamiento
 - ⚡ **Performance**: Carga rápida con Next.js y optimizaciones
 - 🔗 **Preparado para n8n**: Webhooks listos para automatización
 - 🎭 **Animaciones**: Transiciones suaves con Framer Motion
 - 🛍️ **Catálogo Interactivo**: Filtros por categorías y favoritos
+- 💕 **Toques Amorosos**: Elementos visuales cálidos y emotivos
 
 ## 🚀 Tecnologías
 
@@ -147,6 +149,46 @@ const handleSubmit = async (e: React.FormEvent) => {
 3. **Email Node** - Enviar confirmación al cliente
 4. **CRM Integration** - Guardar lead en base de datos
 5. **Follow-up** - Programar seguimiento automático
+
+### Chat de IA con n8n
+
+El chat de IA está integrado con n8n para procesamiento avanzado:
+
+#### Workflow de Chat de IA
+
+El archivo `n8n-ai-chat-workflow.json` contiene un workflow completo para:
+
+1. **Webhook Trigger** - Recibir mensajes del chat
+2. **AI Processing** - Procesar con OpenAI (GPT-3.5 o GPT-4)
+3. **Response Generation** - Generar respuestas amorosas
+4. **Notifications** - Notificar por Telegram y WhatsApp
+5. **Database Storage** - Guardar conversaciones
+6. **Analytics** - Seguimiento de interacciones
+
+#### Configuración del Chat de IA
+
+1. **Configurar OpenAI API**:
+   ```env
+   OPENAI_API_KEY=tu-api-key-de-openai
+   ```
+
+2. **Configurar n8n Webhook**:
+   ```env
+   NEXT_PUBLIC_N8N_WEBHOOK_URL=https://tu-n8n-instance.com/webhook/hogaria-ai-chat
+   ```
+
+3. **Importar Workflow**:
+   - Subir `n8n-ai-chat-workflow.json` a tu instancia de n8n
+   - Configurar credenciales de OpenAI, Telegram y WhatsApp
+   - Activar el workflow
+
+#### Características del Chat
+
+- **Respuestas Amorosas**: Tono cálido y emotivo con emojis
+- **Integración OpenAI**: GPT-3.5 para preguntas simples, GPT-4 para complejas
+- **Notificaciones**: Alertas en tiempo real por Telegram y WhatsApp
+- **Historial**: Guardado de todas las conversaciones
+- **Fallback Local**: Respuestas predefinidas si n8n no está disponible
 
 ## 📱 Productos y Categorías
 

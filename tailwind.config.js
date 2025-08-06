@@ -9,12 +9,12 @@ module.exports = {
     extend: {
       colors: {
         'hogaria': {
-          'beige': '#F5F5DC',
-          'crema': '#FFFDD0',
-          'olive': '#6B8E23',
-          'wine': '#722F37',
-          'warm': '#FDF6E3',
-          'accent': '#D4A574',
+          'beige': '#F7F3E9',      // Más cálido y acogedor
+          'crema': '#FEFCF7',      // Más suave y elegante
+          'olive': '#8BA892',      // Más suave y natural
+          'wine': '#9B6B7A',       // Más suave y cálido
+          'warm': '#FDF8F0',       // Más cálido y amoroso
+          'accent': '#D4B08C',     // Más suave y elegante
         }
       },
       fontFamily: {

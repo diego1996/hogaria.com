@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Menu, X, ShoppingBag, Heart, User } from 'lucide-react'
+import CountrySelector from './CountrySelector'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -49,7 +50,7 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Icons */}
+          {/* Icons and Country Selector */}
           <div className="flex items-center space-x-4">
             <motion.button
               whileHover={{ scale: 1.1 }}
@@ -72,6 +73,11 @@ const Header = () => {
             >
               <User size={20} />
             </motion.button>
+
+            {/* Country Selector */}
+            <div className="hidden sm:block">
+              <CountrySelector />
+            </div>
 
             {/* Mobile menu button */}
             <button
@@ -102,6 +108,10 @@ const Header = () => {
                   {item.name}
                 </a>
               ))}
+              {/* Mobile Country Selector */}
+              <div className="pt-4 border-t border-hogaria-beige">
+                <CountrySelector />
+              </div>
             </nav>
           </motion.div>
         )}

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { CountryProvider } from './contexts/CountryContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
     title: 'Hogaría - Detalles que abrazan tu hogar',
     description: 'Productos artesanales para el hogar hechos con amor y dedicación',
     type: 'website',
-    locale: 'es_ES',
+    locale: 'es_CO',
   },
 }
 
@@ -25,7 +26,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
-        {children}
+        <CountryProvider>
+          {children}
+        </CountryProvider>
       </body>
     </html>
   )

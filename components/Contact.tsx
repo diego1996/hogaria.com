@@ -3,8 +3,10 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { MessageCircle, Phone, Mail, MapPin, Clock, Send } from 'lucide-react'
+import { useCountry } from '@/app/contexts/CountryContext'
 
 const Contact = () => {
+  const { selectedCountry } = useCountry()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -39,7 +41,7 @@ const Contact = () => {
         const message = encodeURIComponent(
           `Nuevo mensaje de contacto:\n\nNombre: ${formData.name}\nEmail: ${formData.email}\nTeléfono: ${formData.phone}\nMensaje: ${formData.message}`
         )
-        const phone = '+34600000000' // Cambiar por el número real
+        const phone = selectedCountry.id === 'co' ? '573000000000' : '34600000000'
         window.open(`https://wa.me/${phone}?text=${message}`, '_blank')
         
         // Reset form
@@ -64,7 +66,16 @@ const Contact = () => {
   const contactInfo = [
     {
       icon: Phone,
-      title: 'WhatsApp',
+      title: 'WhatsApp Colombia',
+      value: '+57 300 000 0000',
+      action: () => {
+        const message = encodeURIComponent('¡Hola! Me gustaría obtener más información sobre Hogaría.')
+        window.open(`https://wa.me/573000000000?text=${message}`, '_blank')
+      }
+    },
+    {
+      icon: Phone,
+      title: 'WhatsApp España',
       value: '+34 600 000 000',
       action: () => {
         const message = encodeURIComponent('¡Hola! Me gustaría obtener más información sobre Hogaría.')
@@ -80,13 +91,13 @@ const Contact = () => {
     {
       icon: MapPin,
       title: 'Ubicación',
-      value: 'Madrid, España',
+      value: 'Bogotá, Colombia / Madrid, España',
       action: () => {}
     },
     {
       icon: Clock,
       title: 'Horario',
-      value: 'Lun-Vie: 9:00-18:00',
+      value: 'Lun-Vie: 9:00-18:00 (COT/CET)',
       action: () => {}
     }
   ]
@@ -102,13 +113,36 @@ const Contact = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-handwriting text-hogaria-wine mb-4">
-            Contáctanos
-          </h2>
+          <div className="relative">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute -top-4 -left-8 text-3xl text-red-400 opacity-60"
+            >
+              💕
+            </motion.div>
+            <h2 className="text-4xl md:text-5xl font-handwriting text-hogaria-wine mb-4 relative z-10">
+              Contáctanos
+            </h2>
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+              className="absolute -top-2 -right-8 text-2xl text-pink-400 opacity-60"
+            >
+              ✨
+            </motion.div>
+          </div>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             ¿Tienes alguna pregunta o quieres hacer un pedido personalizado? 
-            Estamos aquí para ayudarte.
+            Estamos aquí para ayudarte con mucho amor 💕
           </p>
+          <motion.div
+            animate={{ y: [0, -5, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="mt-4 text-2xl"
+          >
+            🌸
+          </motion.div>
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-16">
@@ -170,7 +204,7 @@ const Contact = () => {
                   value={formData.phone}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-hogaria-olive focus:border-transparent transition-all duration-300"
-                  placeholder="+34 600 000 000"
+                  placeholder="+57 300 000 0000 (Colombia) / +34 600 000 000 (España)"
                 />
               </div>
               
@@ -266,7 +300,8 @@ const Contact = () => {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => {
                   const message = encodeURIComponent('¡Hola! Me gustaría obtener más información sobre Hogaría.')
-                  window.open(`https://wa.me/34600000000?text=${message}`, '_blank')
+                  const phone = selectedCountry.id === 'co' ? '573000000000' : '34600000000'
+                  window.open(`https://wa.me/${phone}?text=${message}`, '_blank')
                 }}
                 className="bg-white text-hogaria-wine px-6 py-3 rounded-lg font-semibold hover:bg-hogaria-beige transition-colors duration-300 flex items-center justify-center space-x-2 mx-auto"
               >
@@ -292,16 +327,16 @@ const Contact = () => {
           <div className="grid md:grid-cols-2 gap-8">
             {[
               {
-                question: '¿Hacen envíos a toda España?',
-                answer: 'Sí, realizamos envíos a toda la península con entrega en 24-48 horas.'
+                question: '¿Hacen envíos en Colombia y España?',
+                answer: 'Sí, realizamos envíos a toda Colombia y España con entrega en 24-48 horas.'
               },
               {
                 question: '¿Los productos son 100% artesanales?',
-                answer: 'Absolutamente. Cada pieza está hecha a mano con materiales de la mejor calidad.'
+                answer: 'Absolutamente. Cada pieza está hecha a mano en Colombia con materiales de la mejor calidad.'
               },
               {
                 question: '¿Aceptan pedidos personalizados?',
-                answer: '¡Por supuesto! Nos encanta crear productos únicos para nuestros clientes.'
+                answer: '¡Por supuesto! Nos encanta crear productos únicos para nuestros clientes en ambos países.'
               },
               {
                 question: '¿Cuál es el tiempo de entrega?',

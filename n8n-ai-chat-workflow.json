@@ -1,0 +1,414 @@
+{
+  "name": "Hogaría AI Chat Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "hogaria-ai-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "hogaria-ai-chat-webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "type-check",
+              "leftValue": "={{ $json.type }}",
+              "rightValue": "ai_chat",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-ai-chat",
+      "name": "If AI Chat",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "gpt-3.5-turbo"
+            },
+            {
+              "name": "messages",
+              "value": "=[\n  {\n    \"role\": \"system\",\n    \"content\": \"Eres un asistente virtual amoroso y cálido para Hogaría, una empresa artesanal que vende productos para el hogar como sábanas, almohadas, muñecos navideños y manteles. Tu tono debe ser siempre cariñoso, usando emojis de corazón, flores y magia. Responde en español y siempre sugiere contactar por WhatsApp para hacer pedidos. Mantén las respuestas concisas pero amorosas.\"\n  },\n  {\n    \"role\": \"user\",\n    \"content\": \"={{ $json.message }}\"\n  }\n]"
+            },
+            {
+              "name": "max_tokens",
+              "value": 300
+            },
+            {
+              "name": "temperature",
+              "value": 0.8
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "openai-chat",
+      "name": "OpenAI Chat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 200],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "gpt-4"
+            },
+            {
+              "name": "messages",
+              "value": "=[\n  {\n    \"role\": \"system\",\n    \"content\": \"Eres un asistente virtual amoroso y cálido para Hogaría, una empresa artesanal que vende productos para el hogar como sábanas, almohadas, muñecos navideños y manteles. Tu tono debe ser siempre cariñoso, usando emojis de corazón, flores y magia. Responde en español y siempre sugiere contactar por WhatsApp para hacer pedidos. Mantén las respuestas concisas pero amorosas.\"\n  },\n  {\n    \"role\": \"user\",\n    \"content\": \"={{ $json.message }}\"\n  }\n]"
+            },
+            {
+              "name": "max_tokens",
+              "value": 400
+            },
+            {
+              "name": "temperature",
+              "value": 0.7
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "openai-chat-gpt4",
+      "name": "OpenAI Chat GPT-4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 400],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "complexity-check",
+              "leftValue": "={{ $json.message.length }}",
+              "rightValue": 50,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-complex-question",
+      "name": "If Complex Question",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Procesar respuesta de OpenAI\nconst aiResponse = $input.first().json.choices[0].message.content;\n\n// Agregar sugerencia de WhatsApp\nconst whatsappSuggestion = '\\n\\n💬 ¿Te gustaría hacer tu pedido o tienes más preguntas? ¡Escríbenos por WhatsApp! Estamos aquí para ayudarte con mucho amor.';\n\n// Crear respuesta final\nconst finalResponse = {\n  response: aiResponse + whatsappSuggestion,\n  conversationId: $('Webhook Trigger').first().json.conversationId,\n  timestamp: new Date().toISOString(),\n  source: 'hogaria-ai-chat-n8n',\n  aiModel: $input.first().json.model || 'gpt-3.5-turbo'\n};\n\nreturn [{\n  json: finalResponse\n}];"
+      },
+      "id": "process-response",
+      "name": "Process Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Procesar respuesta de OpenAI GPT-4\nconst aiResponse = $input.first().json.choices[0].message.content;\n\n// Agregar sugerencia de WhatsApp\nconst whatsappSuggestion = '\\n\\n💬 ¿Te gustaría hacer tu pedido o tienes más preguntas? ¡Escríbenos por WhatsApp! Estamos aquí para ayudarte con mucho amor.';\n\n// Crear respuesta final\nconst finalResponse = {\n  response: aiResponse + whatsappSuggestion,\n  conversationId: $('Webhook Trigger').first().json.conversationId,\n  timestamp: new Date().toISOString(),\n  source: 'hogaria-ai-chat-n8n-gpt4',\n  aiModel: $input.first().json.model || 'gpt-4'\n};\n\nreturn [{\n  json: finalResponse\n}];"
+      },
+      "id": "process-response-gpt4",
+      "name": "Process Response GPT-4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "message",
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=🤖 **Nuevo mensaje del Chat de IA**\\n\\n**Usuario:** {{ $('Webhook Trigger').first().json.message }}\\n**Respuesta:** {{ $json.response }}\\n**Conversación ID:** {{ $('Webhook Trigger').first().json.conversationId }}\\n**Timestamp:** {{ $('Webhook Trigger').first().json.timestamp }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-notification",
+      "name": "Telegram Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1340, 500],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "message",
+        "to": "YOUR_WHATSAPP_NUMBER",
+        "body": "=🤖 **Nuevo mensaje del Chat de IA**\\n\\n**Usuario:** {{ $('Webhook Trigger').first().json.message }}\\n**Respuesta:** {{ $json.response }}\\n**Conversación ID:** {{ $('Webhook Trigger').first().json.conversationId }}",
+        "additionalFields": {}
+      },
+      "id": "whatsapp-notification",
+      "name": "WhatsApp Notification",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [1340, 700],
+      "credentials": {
+        "whatsAppApi": {
+          "id": "whatsapp-credentials",
+          "name": "WhatsApp Business API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "conversation",
+        "conversationId": "={{ $('Webhook Trigger').first().json.conversationId }}",
+        "message": "={{ $('Webhook Trigger').first().json.message }}",
+        "response": "={{ $json.response }}",
+        "timestamp": "={{ $('Webhook Trigger').first().json.timestamp }}",
+        "source": "={{ $('Webhook Trigger').first().json.source }}",
+        "userAgent": "={{ $('Webhook Trigger').first().json.userAgent }}",
+        "ip": "={{ $('Webhook Trigger').first().json.ip }}"
+      },
+      "id": "save-to-database",
+      "name": "Save to Database",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [1560, 300],
+      "credentials": {
+        "postgres": {
+          "id": "postgres-credentials",
+          "name": "PostgreSQL Database"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "If AI Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If AI Chat": {
+      "main": [
+        [
+          {
+            "node": "If Complex Question",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Complex Question": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Chat GPT-4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat": {
+      "main": [
+        [
+          {
+            "node": "Process Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat GPT-4": {
+      "main": [
+        [
+          {
+            "node": "Process Response GPT-4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Response": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram Notification",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "WhatsApp Notification",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Save to Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Response GPT-4": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram Notification",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "WhatsApp Notification",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Save to Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z",
+      "id": "hogaria-ai-chat",
+      "name": "Hogaría AI Chat"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "1"
+} 
