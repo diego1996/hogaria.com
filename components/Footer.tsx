@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { MessageCircle, Heart, Instagram, Facebook, Twitter } from 'lucide-react'
 import Link from 'next/link'
 import { useNavigation } from '@/app/hooks/useNavigation'
+import { NavigationLink } from './NavigationLink'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
@@ -96,12 +97,13 @@ const Footer = () => {
               <ul className="space-y-2">
                 {footerLinks.productos.map((link) => (
                   <li key={link.name}>
-                    <button
-                      onClick={() => handleNavigation(link.href, link.anchor)}
+                    <NavigationLink
+                      href={link.href}
+                      anchor={link.anchor}
                       className="text-hogaria-beige hover:text-white transition-colors duration-300 cursor-pointer"
                     >
                       {link.name}
-                    </button>
+                    </NavigationLink>
                   </li>
                 ))}
               </ul>
