@@ -309,7 +309,7 @@ const ProductDetailsPage = () => {
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Producto no encontrado</h2>
             <p className="text-gray-600 mb-6">El producto que buscas no existe o ha sido removido.</p>
             <button
-              onClick={() => router.push('/#productos')}
+              onClick={() => router.push('/')}
               className="btn-primary"
             >
               Ver Productos
@@ -714,6 +714,9 @@ const ProductDetailsPage = () => {
         product={product}
       />
       <Footer />
+      <AIChat />
+      <FloatingWhatsApp />
+      <AccessibilityPanel />
     </div>
   )
 }

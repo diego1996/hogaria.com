@@ -2,30 +2,37 @@
 
 import { motion } from 'framer-motion'
 import { MessageCircle, Heart, Instagram, Facebook, Twitter } from 'lucide-react'
+import Link from 'next/link'
+import { useNavigation } from '@/app/hooks/useNavigation'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
+  const { navigateTo } = useNavigation()
 
   const footerLinks = {
     productos: [
-      { name: 'Sábanas', href: '#productos' },
-      { name: 'Almohadas', href: '#productos' },
-      { name: 'Decoración Navideña', href: '#colecciones' },
-      { name: 'Manteles', href: '#productos' },
-      { name: 'Cojines', href: '#productos' }
+      { name: 'Sábanas', href: '/', anchor: '#productos' },
+      { name: 'Almohadas', href: '/', anchor: '#productos' },
+      { name: 'Decoración Navideña', href: '/', anchor: '#colecciones' },
+      { name: 'Manteles', href: '/', anchor: '#productos' },
+      { name: 'Cojines', href: '/', anchor: '#productos' }
     ],
     empresa: [
-      { name: 'Sobre Nosotros', href: '#sobre-nosotros' },
-      { name: 'Nuestra Historia', href: '#sobre-nosotros' },
-      { name: 'Valores', href: '#sobre-nosotros' },
-      { name: 'Artesanía', href: '#sobre-nosotros' }
+      { name: 'Sobre Nosotros', href: '/', anchor: '#sobre-nosotros' },
+      { name: 'Nuestra Historia', href: '/', anchor: '#sobre-nosotros' },
+      { name: 'Valores', href: '/', anchor: '#sobre-nosotros' },
+      { name: 'Artesanía', href: '/', anchor: '#sobre-nosotros' }
     ],
     ayuda: [
-      { name: 'Contacto', href: '#contacto' },
-      { name: 'Envíos', href: '#contacto' },
-      { name: 'Devoluciones', href: '#contacto' },
-      { name: 'FAQ', href: '/faq' }
+      { name: 'Contacto', href: '/', anchor: '#contacto' },
+      { name: 'Envíos', href: '/', anchor: '#contacto' },
+      { name: 'Devoluciones', href: '/', anchor: '#contacto' },
+      { name: 'FAQ', href: '/faq', anchor: null }
     ]
+  }
+
+  const handleNavigation = (href: string, anchor: string | null) => {
+    navigateTo(href, anchor)
   }
 
   const socialLinks = [
@@ -89,12 +96,12 @@ const Footer = () => {
               <ul className="space-y-2">
                 {footerLinks.productos.map((link) => (
                   <li key={link.name}>
-                    <a
-                      href={link.href}
-                      className="text-hogaria-beige hover:text-white transition-colors duration-300"
+                    <button
+                      onClick={() => handleNavigation(link.href, link.anchor)}
+                      className="text-hogaria-beige hover:text-white transition-colors duration-300 cursor-pointer"
                     >
                       {link.name}
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -111,12 +118,12 @@ const Footer = () => {
               <ul className="space-y-2">
                 {footerLinks.empresa.map((link) => (
                   <li key={link.name}>
-                    <a
-                      href={link.href}
-                      className="text-hogaria-beige hover:text-white transition-colors duration-300"
+                    <button
+                      onClick={() => handleNavigation(link.href, link.anchor)}
+                      className="text-hogaria-beige hover:text-white transition-colors duration-300 cursor-pointer"
                     >
                       {link.name}
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -133,12 +140,12 @@ const Footer = () => {
               <ul className="space-y-2">
                 {footerLinks.ayuda.map((link) => (
                   <li key={link.name}>
-                    <a
-                      href={link.href}
-                      className="text-hogaria-beige hover:text-white transition-colors duration-300"
+                    <button
+                      onClick={() => handleNavigation(link.href, link.anchor)}
+                      className="text-hogaria-beige hover:text-white transition-colors duration-300 cursor-pointer"
                     >
                       {link.name}
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ul>
