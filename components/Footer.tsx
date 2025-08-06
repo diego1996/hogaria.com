@@ -24,7 +24,7 @@ const Footer = () => {
       { name: 'Contacto', href: '#contacto' },
       { name: 'Envíos', href: '#contacto' },
       { name: 'Devoluciones', href: '#contacto' },
-      { name: 'FAQ', href: '#contacto' }
+      { name: 'FAQ', href: '/faq' }
     ]
   }
 
@@ -214,13 +214,13 @@ const Footer = () => {
 
             {/* Legal Links */}
             <div className="flex items-center space-x-6 text-sm text-hogaria-beige">
-              <a href="#" className="hover:text-white transition-colors duration-300">
+              <a href="/politica-privacidad" className="hover:text-white transition-colors duration-300">
                 Política de Privacidad
               </a>
-              <a href="#" className="hover:text-white transition-colors duration-300">
+              <a href="/terminos-servicio" className="hover:text-white transition-colors duration-300">
                 Términos de Servicio
               </a>
-              <a href="#" className="hover:text-white transition-colors duration-300">
+              <a href="/cookies" className="hover:text-white transition-colors duration-300">
                 Cookies
               </a>
             </div>
@@ -237,7 +237,7 @@ const Footer = () => {
         className="bg-hogaria-olive py-4 text-center"
       >
         <p className="text-sm text-white">
-          Hecho con <Heart size={14} className="inline text-red-400" /> en España
+          Hecho con <Heart size={14} className="inline text-red-400" /> en Colombia
         </p>
       </motion.div>
     </footer>

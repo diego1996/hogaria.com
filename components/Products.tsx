@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Heart, ShoppingBag, Star, MessageCircle, Search, Filter } from 'lucide-react'
+import { Heart, ShoppingBag, Star, MessageCircle, Search, Filter, ChevronLeft, ChevronRight, CreditCard } from 'lucide-react'
 import { useCountry } from '@/app/contexts/CountryContext'
+import PaymentModal from './PaymentModal'
 
 interface Product {
   id: number
@@ -28,6 +29,10 @@ const Products = () => {
   const [favorites, setFavorites] = useState<number[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState('popular')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [productsPerPage, setProductsPerPage] = useState(6)
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const { formatPrice, selectedCountry } = useCountry()
 
   const categories = [
@@ -292,6 +297,68 @@ const Products = () => {
     }
   })
 
+  // Lógica de paginación
+  const totalPages = Math.ceil(sortedProducts.length / productsPerPage)
+  const indexOfLastProduct = currentPage * productsPerPage
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage
+  const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct)
+
+  // Resetear a la primera página cuando cambian los filtros
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [selectedCategory, searchTerm, sortBy, productsPerPage])
+
+  // Función para cambiar de página
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber)
+    // Scroll suave hacia arriba de la sección de productos
+    document.getElementById('productos')?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    })
+  }
+
+  // Generar números de página para mostrar
+  const getPageNumbers = () => {
+    const pages = []
+    const maxVisiblePages = 5
+    
+    if (totalPages <= maxVisiblePages) {
+      // Mostrar todas las páginas si hay 5 o menos
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      // Mostrar páginas con ellipsis
+      if (currentPage <= 3) {
+        // Estamos cerca del inicio
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i)
+        }
+        pages.push('...')
+        pages.push(totalPages)
+      } else if (currentPage >= totalPages - 2) {
+        // Estamos cerca del final
+        pages.push(1)
+        pages.push('...')
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i)
+        }
+      } else {
+        // Estamos en el medio
+        pages.push(1)
+        pages.push('...')
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i)
+        }
+        pages.push('...')
+        pages.push(totalPages)
+      }
+    }
+    
+    return pages
+  }
+
   const toggleFavorite = (productId: number) => {
     setFavorites(prev => 
       prev.includes(productId) 
@@ -310,9 +377,14 @@ const Products = () => {
     window.open(`https://wa.me/${phone}?text=${message}`, '_blank')
   }
 
+  const handleOnlinePurchase = (product: Product) => {
+    setSelectedProduct(product)
+    setPaymentModalOpen(true)
+  }
+
   const handleQuickView = (product: Product) => {
-    // Aquí se podría abrir un modal con detalles del producto
-    console.log('Ver detalles de:', product.name)
+    // Redirigir a la página de detalles del producto
+    window.location.href = `/producto/${product.id}`
   }
 
   return (
@@ -433,7 +505,7 @@ const Products = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {sortedProducts.map((product, index) => (
+          {currentProducts.map((product, index) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 20 }}
@@ -565,31 +637,140 @@ const Products = () => {
                 )}
 
                 {/* Action Buttons */}
-                <div className="flex items-center justify-between">
+                <div className="space-y-3">
+                  {/* WhatsApp Button */}
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => handleWhatsAppPurchase(product)}
-                    className="btn-primary flex items-center space-x-2 flex-1 mr-2"
+                    className="w-full btn-primary flex items-center justify-center space-x-2"
                     disabled={product.stock === 0}
                   >
                     <MessageCircle size={18} />
-                    <span>{product.stock === 0 ? 'Agotado' : 'Comprar'}</span>
+                    <span>{product.stock === 0 ? 'Agotado' : 'Comprar por WhatsApp'}</span>
                   </motion.button>
                   
+                  {/* Online Payment Button */}
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleOnlinePurchase(product)}
+                    className="w-full btn-secondary flex items-center justify-center space-x-2"
+                    disabled={product.stock === 0}
+                  >
+                    <CreditCard size={18} />
+                    <span>{product.stock === 0 ? 'Agotado' : 'Pagar Online'}</span>
+                  </motion.button>
+                  
+                  {/* Quick View Button */}
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => handleQuickView(product)}
-                    className="p-3 bg-hogaria-beige hover:bg-hogaria-olive hover:text-white rounded-lg transition-colors duration-300"
+                    className="w-full p-3 bg-hogaria-beige hover:bg-hogaria-olive hover:text-white rounded-lg transition-colors duration-300 flex items-center justify-center space-x-2"
                   >
                     <ShoppingBag size={18} />
+                    <span>Ver Detalles</span>
                   </motion.button>
                 </div>
               </div>
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="mt-12"
+          >
+            <div className="flex flex-col items-center space-y-4">
+              {/* Info de paginación */}
+              <div className="text-sm text-gray-600">
+                Mostrando {indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, sortedProducts.length)} de {sortedProducts.length} productos
+              </div>
+              
+              {/* Controles de paginación */}
+              <div className="flex items-center space-x-2">
+                {/* Botón Anterior */}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`p-2 rounded-lg transition-all duration-300 ${
+                    currentPage === 1
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-hogaria-beige text-hogaria-wine hover:bg-hogaria-olive hover:text-white'
+                  }`}
+                >
+                  <ChevronLeft size={20} />
+                </motion.button>
+
+                {/* Números de página */}
+                <div className="flex items-center space-x-1">
+                  {getPageNumbers().map((page, index) => (
+                    <div key={index}>
+                      {page === '...' ? (
+                        <span className="px-3 py-2 text-gray-400">...</span>
+                      ) : (
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => paginate(page as number)}
+                          className={`px-3 py-2 rounded-lg transition-all duration-300 ${
+                            currentPage === page
+                              ? 'bg-hogaria-wine text-white'
+                              : 'bg-hogaria-beige text-gray-700 hover:bg-hogaria-olive hover:text-white'
+                          }`}
+                        >
+                          {page}
+                        </motion.button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Botón Siguiente */}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`p-2 rounded-lg transition-all duration-300 ${
+                    currentPage === totalPages
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-hogaria-beige text-hogaria-wine hover:bg-hogaria-olive hover:text-white'
+                  }`}
+                >
+                  <ChevronRight size={20} />
+                </motion.button>
+              </div>
+
+              {/* Selector de productos por página */}
+              <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <span>Productos por página:</span>
+                <select
+                  value={productsPerPage}
+                  onChange={(e) => {
+                    const newPerPage = parseInt(e.target.value)
+                    setProductsPerPage(newPerPage)
+                    setCurrentPage(1)
+                  }}
+                  className="px-2 py-1 border border-hogaria-beige rounded focus:ring-2 focus:ring-hogaria-olive focus:border-transparent"
+                >
+                  <option value={6}>6</option>
+                  <option value={9}>9</option>
+                  <option value={12}>12</option>
+                  <option value={15}>15</option>
+                </select>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Statistics Section */}
         <motion.div
@@ -669,6 +850,16 @@ const Products = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Payment Modal */}
+      <PaymentModal
+        isOpen={paymentModalOpen}
+        onClose={() => {
+          setPaymentModalOpen(false)
+          setSelectedProduct(null)
+        }}
+        product={selectedProduct}
+      />
     </section>
   )
 }
