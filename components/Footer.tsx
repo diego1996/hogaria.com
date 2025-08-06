@@ -32,9 +32,7 @@ const Footer = () => {
     ]
   }
 
-  const handleNavigation = (href: string, anchor: string | null) => {
-    navigateTo(href, anchor)
-  }
+
 
   const socialLinks = [
     { icon: Instagram, href: '#', label: 'Instagram' },
@@ -120,12 +118,13 @@ const Footer = () => {
               <ul className="space-y-2">
                 {footerLinks.empresa.map((link) => (
                   <li key={link.name}>
-                    <button
-                      onClick={() => handleNavigation(link.href, link.anchor)}
+                    <NavigationLink
+                      href={link.href}
+                      anchor={link.anchor}
                       className="text-hogaria-beige hover:text-white transition-colors duration-300 cursor-pointer"
                     >
                       {link.name}
-                    </button>
+                    </NavigationLink>
                   </li>
                 ))}
               </ul>
@@ -142,12 +141,13 @@ const Footer = () => {
               <ul className="space-y-2">
                 {footerLinks.ayuda.map((link) => (
                   <li key={link.name}>
-                    <button
-                      onClick={() => handleNavigation(link.href, link.anchor)}
+                    <NavigationLink
+                      href={link.href}
+                      anchor={link.anchor}
                       className="text-hogaria-beige hover:text-white transition-colors duration-300 cursor-pointer"
                     >
                       {link.name}
-                    </button>
+                    </NavigationLink>
                   </li>
                 ))}
               </ul>
